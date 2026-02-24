@@ -6,6 +6,7 @@
   --teal-strong: #60a8bf;
   --text: #1a2d3d;
   --shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+  --sidebar-w: clamp(252px, 17vw, 404px);
 }
 
 * {
@@ -131,7 +132,7 @@ body.no-scroll {
 
 .tc-shell {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
   height: calc(100vh - 64px);
   overflow: hidden;
 }
@@ -143,6 +144,7 @@ body.no-scroll {
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   min-height: 0;
   overflow: hidden;
+  min-width: 0;
 }
 
 .tc-client-strip {
@@ -219,6 +221,7 @@ body.no-scroll {
 
 .tc-tree {
   overflow: auto;
+  overscroll-behavior: contain;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 8px 0;
@@ -296,6 +299,7 @@ body.no-scroll {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  min-width: 0;
 }
 
 .tc-main-toolbar {
@@ -305,7 +309,7 @@ body.no-scroll {
   grid-template-columns: auto auto 1fr;
   align-items: center;
   column-gap: 12px;
-  row-gap: 8px;
+  row-gap: 6px;
   padding: 8px 0;
 }
 
@@ -317,7 +321,7 @@ body.no-scroll {
 
 .tc-tax-widget select,
 .tc-tax-widget input {
-  height: 34px;
+  height: 33px;
   border: 1px solid #7fb8c9;
   background: var(--teal);
   color: #111;
@@ -336,8 +340,8 @@ body.no-scroll {
   border: 2px solid #74b3c5;
   background: var(--teal);
   color: #0b2834;
-  font-size: 0.98rem;
-  padding: 0.45rem 0.7rem;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.68rem;
   cursor: pointer;
 }
 
@@ -376,6 +380,7 @@ body.no-scroll {
 .tc-form {
   flex: 1;
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 12px 4px 0;
   min-height: 0;
 }
@@ -463,7 +468,7 @@ body.no-scroll {
 
 .tc-row {
   display: grid;
-  grid-template-columns: minmax(360px, 1fr) 280px;
+  grid-template-columns: minmax(360px, 1fr) 250px;
   align-items: center;
 }
 
@@ -514,7 +519,7 @@ body.no-scroll {
 }
 
 .toggle-row {
-  grid-template-columns: minmax(360px, 1fr) 110px;
+  grid-template-columns: minmax(360px, 1fr) 96px;
 }
 
 .toggle-row input[type='checkbox'] {
@@ -662,7 +667,7 @@ body.no-scroll {
 
 @media (max-width: 1280px) {
   .tc-shell {
-    grid-template-columns: 290px minmax(0, 1fr);
+    grid-template-columns: 272px minmax(0, 1fr);
   }
 
   .tc-right-tools p {
@@ -709,7 +714,7 @@ body.no-scroll {
     left: 0;
     top: 64px;
     bottom: 0;
-    width: min(84vw, 320px);
+    width: min(86vw, 320px);
     z-index: 120;
     transform: translateX(-104%);
     transition: transform 180ms ease;

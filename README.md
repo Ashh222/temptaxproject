@@ -18,6 +18,21 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Deploy on Railway
+
+This repo includes `/Users/ashhall/Documents/Code/Tax Software/railway.json` so Railway uses:
+- Build: `NIXPACKS`
+- Start: `node server.js`
+- Health check: `GET /api/health`
+
+Steps:
+1. In Railway, create/select your project and connect this GitHub repo.
+2. Ensure the service tracks the `main` branch.
+3. Deploy.
+4. Open the generated Railway domain and verify `/api/health` returns `{\"ok\":true,...}`.
+
+No required environment variables are needed for startup. Railway will inject `PORT`, which this app already uses.
+
 ## What this project is and is not
 
 This is an MVP intended for product/UX validation and technical prototyping. It is **not production-ready filing software**.

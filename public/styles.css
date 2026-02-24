@@ -6,7 +6,7 @@
   --teal-strong: #60a8bf;
   --text: #1a2d3d;
   --shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
-  --sidebar-w: clamp(252px, 17vw, 404px);
+  --sidebar-w: 254px;
 }
 
 * {
@@ -31,7 +31,7 @@ body.no-scroll {
 }
 
 .tc-topbar {
-  height: 64px;
+  height: 72px;
   background: linear-gradient(90deg, #2f3135, #3a3c41);
   color: #fff;
   display: flex;
@@ -133,7 +133,7 @@ body.no-scroll {
 .tc-shell {
   display: grid;
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-  height: calc(100vh - 64px);
+  height: calc(100vh - 72px);
   overflow: hidden;
 }
 
@@ -193,9 +193,12 @@ body.no-scroll {
   background: var(--teal-strong);
   color: #fff;
   padding: 10px;
-  font-size: 2.75rem;
+  font-size: 2.35rem;
   font-weight: 700;
   line-height: 1.06;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tc-collapse-btn {
@@ -505,7 +508,7 @@ body.no-scroll {
 
 .tc-row {
   display: grid;
-  grid-template-columns: minmax(360px, 1fr) 250px;
+  grid-template-columns: minmax(360px, 1fr) 148px;
   align-items: center;
 }
 
@@ -556,7 +559,7 @@ body.no-scroll {
 }
 
 .toggle-row {
-  grid-template-columns: minmax(360px, 1fr) 96px;
+  grid-template-columns: minmax(360px, 1fr) 82px;
 }
 
 .toggle-row input[type='checkbox'] {
@@ -704,7 +707,7 @@ body.no-scroll {
 
 @media (max-width: 1280px) {
   .tc-shell {
-    grid-template-columns: 272px minmax(0, 1fr);
+    grid-template-columns: 238px minmax(0, 1fr);
   }
 
   .tc-right-tools p {
@@ -749,7 +752,7 @@ body.no-scroll {
   .tc-sidebar {
     position: fixed;
     left: 0;
-    top: 64px;
+    top: 72px;
     bottom: 0;
     width: min(86vw, 320px);
     z-index: 120;
@@ -771,7 +774,7 @@ body.no-scroll {
 
   .tc-backdrop {
     position: fixed;
-    inset: 64px 0 0;
+    inset: 72px 0 0;
     background: rgba(0, 0, 0, 0.35);
     z-index: 110;
   }

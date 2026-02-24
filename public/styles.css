@@ -141,7 +141,7 @@ body.no-scroll {
   background: var(--panel);
   border-right: 1px solid #9f9f9f;
   display: grid;
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
   min-width: 0;
@@ -155,6 +155,29 @@ body.no-scroll {
   padding: 8px;
   background: #f8f8f8;
   border-bottom: 1px solid #b0b0b0;
+}
+
+.tc-sidebar-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  display: grid;
+  grid-template-rows: auto auto auto auto auto;
+  align-content: start;
+}
+
+.tc-sidebar-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.tc-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #6a6a6a;
+  border-radius: 8px;
+}
+
+.tc-sidebar-scroll::-webkit-scrollbar-track {
+  background: #ccccce;
 }
 
 .tc-home-btn {
@@ -223,25 +246,10 @@ body.no-scroll {
 }
 
 .tc-tree {
-  overflow: auto;
-  overscroll-behavior: contain;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 8px 0;
-  min-height: 0;
-}
-
-.tc-tree::-webkit-scrollbar {
-  width: 10px;
-}
-
-.tc-tree::-webkit-scrollbar-thumb {
-  background: #6a6a6a;
-  border-radius: 8px;
-}
-
-.tc-tree::-webkit-scrollbar-track {
-  background: #ccccce;
+  min-height: auto;
 }
 
 .tc-tree-item {

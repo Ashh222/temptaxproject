@@ -1,5 +1,4 @@
 const STORAGE_KEY = 'simple-sa-mvp-state-v2';
-const totalSteps = 7;
 
 let currentStep = 1;
 let latestEstimate = null;
@@ -7,6 +6,7 @@ let latestEstimate = null;
 const form = document.getElementById('returnForm');
 const appRoot = document.querySelector('.tc-app');
 const pages = [...document.querySelectorAll('.tc-page')];
+const totalSteps = pages.length;
 const treeStepButtons = [...document.querySelectorAll('[data-step-target]')];
 
 const prevBtn = document.getElementById('prevBtn');
@@ -212,7 +212,7 @@ function updateStepUI() {
 
   prevBtn.disabled = currentStep === 1;
   nextBtn.disabled = currentStep === totalSteps;
-  deleteScheduleBtn.hidden = currentStep !== 5;
+  deleteScheduleBtn.hidden = currentStep < 5;
 
   if (currentStep === totalSteps) {
     nextBtn.textContent = 'Next Step ►';

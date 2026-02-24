@@ -170,13 +170,70 @@
               <span class="state neutral">▸</span>
               <span>Partnership Management</span>
             </button>
-            <button class="tc-tree-item" type="button">
-              <span class="state neutral">▸</span>
+            <button class="tc-tree-item" type="button" data-step-target="8">
+              <span class="state done">✓</span>
               <span>Pension income and benefits</span>
             </button>
-            <button class="tc-tree-item" type="button">
-              <span class="state neutral">▸</span>
+            <button class="tc-tree-item child" type="button" data-step-target="9">
+              <span class="state neutral">▣</span>
+              <span>State retirement pension and other</span>
+            </button>
+            <button class="tc-tree-item child" type="button" data-step-target="10">
+              <span class="state done">✓</span>
+              <span>Taxable incapacity benefit and ESA</span>
+            </button>
+            <button class="tc-tree-item child" type="button" data-step-target="11">
+              <span class="state done">✓</span>
+              <span>Jobseeker's allowance</span>
+            </button>
+            <button class="tc-tree-item child" type="button" data-step-target="12">
+              <span class="state done">✓</span>
+              <span>Pension, Annuity or Lump Sum</span>
+            </button>
+            <button class="tc-tree-item child" type="button" data-step-target="13">
+              <span class="state done">✓</span>
+              <span>Pensions - Unauthorised payments</span>
+            </button>
+            <button class="tc-tree-item child" type="button" data-step-target="14">
+              <span class="state done">✓</span>
+              <span>Pensions - Lump Sums from abroad</span>
+            </button>
+
+            <button class="tc-tree-item" type="button" data-step-target="15">
+              <span class="state done">✓</span>
               <span>Other income</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▾</span>
+              <span>Savings and investments</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="16">
+              <span class="state done">✓</span>
+              <span>Bank and building society interest</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="17">
+              <span class="state neutral">▣</span>
+              <span>Any other UK Interest</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="18">
+              <span class="state done">✓</span>
+              <span>Shares and unit trusts</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="19">
+              <span class="state done">✓</span>
+              <span>Foreign Dividends (up to £500)</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="20">
+              <span class="state done">✓</span>
+              <span>Taxable sums from UK policies</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="21">
+              <span class="state done">✓</span>
+              <span>Taxable sums from void ISAs</span>
+            </button>
+            <button class="tc-tree-item child" type="button" data-step-target="22">
+              <span class="state done">✓</span>
+              <span>Share Schemes</span>
             </button>
             <button class="tc-tree-item" type="button">
               <span class="state neutral">▸</span>
@@ -573,6 +630,171 @@
                 Submission response
                 <textarea id="submissionOutput" rows="8" readonly></textarea>
               </label>
+            </section>
+
+            <section class="tc-page" data-step="8" hidden>
+              <h2>Pension income and Benefits</h2>
+              <p>Please tell us which of the following types of income you received in 2024-25:</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row toggle-row"><span>Taxable state pensions or benefits</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Taxable Incapacity Benefit and contribution-based Employment &amp; Support Allowance</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Jobseeker's allowance</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Private pensions</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Unauthorised pension payments</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Lump sum pension payments from abroad</span><input type="checkbox" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="9" hidden>
+              <h2>State retirement pension and other taxable state benefits</h2>
+              <p>Please indicate the total taxable amounts of state benefits you received in 2024-25.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>State Pension - the amount due for the year (not the weekly amount)</span><input inputmode="decimal" /></label>
+              </div>
+              <div class="tc-grid-rows section-gap">
+                <label class="tc-row"><span>State Pension Lump Sum</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Tax taken off</span><input inputmode="decimal" /></label>
+              </div>
+              <div class="tc-grid-rows section-gap">
+                <label class="tc-row"><span>Total of any other taxable state benefits</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="10" hidden>
+              <h2>Taxable incapacity benefit and ESA</h2>
+              <p>If you received taxable incapacity benefit or contribution-based Employment &amp; Support Allowance in 2024-25, enter details below:</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>The gross taxable amount (before tax)</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>The amount, if any, tax taken off this payment</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="11" hidden>
+              <h2>Jobseeker's allowance</h2>
+              <p>If you received Jobseeker's allowance in 2024-25, enter:</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>The gross taxable amount</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="12" hidden>
+              <h2>Pension, Annuities and Taxable Lump Sums</h2>
+              <h3>Private pensions</h3>
+              <p>Enter details separately for each source of income.</p>
+              <div class="tc-matrix">
+                <div>Type of payment</div><div>Name of payer</div><div>PAYE reference</div><div>Gross amount</div><div>Tax taken off</div>
+                <input /><input /><input /><input inputmode="decimal" /><input inputmode="decimal" />
+                <div class="tc-matrix-total">Total:</div><input inputmode="decimal" /><input inputmode="decimal" />
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="13" hidden>
+              <h2>Pensions - Unauthorised Payments</h2>
+              <p>Please enter details of any unauthorised pension payments you received this year:</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>Unauthorised payments NOT subject to surcharge</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Unauthorised payments subject to surcharge</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Foreign tax paid on unauthorised payment</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="14" hidden>
+              <h2>Pensions - Lump Sums from Abroad</h2>
+              <p>Please enter details of any lump sum payments received from overseas pension schemes.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>Taxable short service refund of contributions</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Foreign tax paid (in £ sterling) above</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="15" hidden>
+              <h2>Other income</h2>
+              <p>Now please tell us about any other income you received in the 2024-25 tax year.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row toggle-row"><span>Did you have any income from UK Savings or Investments?</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Did you receive a taxable benefit from an employer's share scheme?</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Were you a name at Lloyd's?</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Did you receive any income from UK Property or Furnished Holiday Lettings in the EEA?</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Did you have any foreign income?</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Is any trust income taxable as yours?</span><input type="checkbox" /></label>
+                <label class="tc-row toggle-row"><span>Did you receive any income from the estate of someone who has died?</span><input type="checkbox" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="16" hidden>
+              <h2>Interest from Banks, Building Societies, Unit Trusts, Internet accounts etc</h2>
+              <h3>Taxed UK Interest</h3>
+              <p>Enter the total amount of interest received in the first box below.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>Interest received after tax has been deducted (enter the amount actually received)</span><input inputmode="decimal" /></label>
+              </div>
+              <h3>Untaxed UK Interest (including foreign interest up to £2,000)</h3>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>UK Interest received with no tax taken off</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Foreign interest received up to £2,000 with no tax taken off</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="17" hidden>
+              <h2>Any other UK Interest</h2>
+              <p>Enter any other interest you received from any other UK investments.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>total amount after tax (net)</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>tax deducted</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>amount before tax (gross)</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="18" hidden>
+              <h2>Shares and unit trusts</h2>
+              <p>You can simply enter the total dividends received in the year, or use the wizard.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>Dividends and other qualifying distributions from UK companies</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Dividend distributions from UK Unit trusts/OEICs</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Stock/Scrip Dividends from UK companies</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Bonus issues of securities and redeemable shares</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Close company loans written off or released</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="19" hidden>
+              <h2>Foreign Dividends (up to £500)</h2>
+              <p>If you received foreign dividends up to £500 after tax, enter the amounts below.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>Foreign dividends, after any tax was taken off</span><input inputmode="decimal" /></label>
+                <label class="tc-row"><span>Tax taken off foreign dividends</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="20" hidden>
+              <h2>Taxable sums from UK life insurance policies, capital redemption policies and life annuity contracts</h2>
+              <p>Enter details for each gain separately in the table below.</p>
+              <div class="tc-matrix six-col">
+                <div>Description</div><div>Number of years</div><div>Amount of gain</div><div>Tax treated as paid</div><div>Notional tax</div><div></div>
+                <input /><input /><input inputmode="decimal" /><input inputmode="decimal" /><input inputmode="decimal" />
+                <div class="tc-matrix-total">Total:</div><input inputmode="decimal" /><input inputmode="decimal" />
+              </div>
+              <div class="tc-grid-rows section-gap">
+                <label class="tc-row"><span>Enter amount of any corresponding deficiency relief</span><input inputmode="decimal" /></label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="21" hidden>
+              <h2>Taxable sums from void ISAs</h2>
+              <p>You should enter details for each gain separately.</p>
+              <div class="tc-matrix five-col">
+                <div>Description</div><div>Number of years</div><div>Amount of gain</div><div>Tax deducted</div><div></div>
+                <input /><input /><input inputmode="decimal" /><input inputmode="decimal" />
+                <div class="tc-matrix-total">Total:</div><input inputmode="decimal" /><input inputmode="decimal" />
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="22" hidden>
+              <h2>Share schemes</h2>
+              <p>You have told us that you received a taxable benefit from an employer's share or securities scheme.</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row"><span>the taxable amount</span><input inputmode="decimal" /></label>
+              </div>
             </section>
           </form>
 

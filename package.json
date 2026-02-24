@@ -1,0 +1,14 @@
+{
+  "name": "uk-self-assessment-mvp",
+  "version": "0.1.0",
+  "description": "Simple self-assessment software MVP for UK individuals with HMRC XML submission scaffolding.",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

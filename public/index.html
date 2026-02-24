@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Self Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg-layer"></div>
+    <header class="hero">
+      <p class="eyebrow">UK SELF ASSESSMENT MVP</p>
+      <h1>File your tax return in plain English</h1>
+      <p>
+        A guided, no-jargon flow for individuals. Save progress automatically, review your estimate, and build HMRC XML for submission.
+      </p>
+      <div class="hero-actions">
+        <button type="button" id="loadSampleBtn" class="ghost-btn">Load sample</button>
+        <button type="button" id="resetBtn" class="ghost-btn warning">Reset</button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="progress-panel" aria-label="Progress">
+        <div class="meter-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20">
+          <span id="meterFill" class="meter-fill"></span>
+        </div>
+        <ol id="stepDots" class="step-dots">
+          <li>About you</li>
+          <li>Income</li>
+          <li>Reliefs</li>
+          <li>Review</li>
+          <li>Submit</li>
+        </ol>
+      </section>
+
+      <form id="returnForm" class="wizard" novalidate>
+        <section class="step-card" data-step="1">
+          <h2>About you</h2>
+          <p class="hint">These details identify your return. Keep them exactly as HMRC has them.</p>
+
+          <div class="grid two">
+            <label>
+              First name
+              <input name="personal.firstName" autocomplete="given-name" required />
+            </label>
+            <label>
+              Last name
+              <input name="personal.lastName" autocomplete="family-name" required />
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Email
+              <input name="personal.email" type="email" autocomplete="email" />
+            </label>
+            <label>
+              Date of birth
+              <input name="personal.dateOfBirth" type="date" autocomplete="bday" />
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Unique Taxpayer Reference (UTR)
+              <input name="personal.utr" inputmode="numeric" minlength="10" maxlength="10" required />
+            </label>
+            <label>
+              National Insurance number
+              <input name="personal.nino" placeholder="QQ123456C" />
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Region
+              <select name="personal.region">
+                <option value="england-wales-ni">England, Wales or Northern Ireland</option>
+                <option value="scotland">Scotland (estimate not fully supported)</option>
+              </select>
+            </label>
+            <label>
+              Tax year
+              <select name="taxYear">
+                <option value="2025-26">2025-26</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="step-card" data-step="2" hidden>
+          <h2>Income</h2>
+          <p class="hint">Enter whole-year totals before tax.</p>
+
+          <div class="grid two">
+            <label>
+              Employment income
+              <div class="money-field"><span>£</span><input name="incomes.employment" inputmode="decimal" /></div>
+            </label>
+            <label>
+              Self-employment profit
+              <div class="money-field"><span>£</span><input name="incomes.selfEmployment" inputmode="decimal" /></div>
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Property income
+              <div class="money-field"><span>£</span><input name="incomes.property" inputmode="decimal" /></div>
+            </label>
+            <label>
+              Pension income
+              <div class="money-field"><span>£</span><input name="incomes.pension" inputmode="decimal" /></div>
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Bank/building society interest
+              <div class="money-field"><span>£</span><input name="incomes.interest" inputmode="decimal" /></div>
+            </label>
+            <label>
+              Dividends
+              <div class="money-field"><span>£</span><input name="incomes.dividends" inputmode="decimal" /></div>
+            </label>
+          </div>
+
+          <label>
+            Other taxable income
+            <div class="money-field"><span>£</span><input name="incomes.other" inputmode="decimal" /></div>
+          </label>
+        </section>
+
+        <section class="step-card" data-step="3" hidden>
+          <h2>Reliefs and tax already paid</h2>
+          <p class="hint">Only fill what applies. Leave blank if not relevant.</p>
+
+          <div class="grid two">
+            <label>
+              Pension contributions (gross)
+              <div class="money-field"><span>£</span><input name="reliefs.pensionContributions" inputmode="decimal" /></div>
+            </label>
+            <label>
+              Gift Aid donations
+              <div class="money-field"><span>£</span><input name="reliefs.giftAid" inputmode="decimal" /></div>
+            </label>
+          </div>
+
+          <div class="grid two">
+            <label>
+              Trading/property losses carried forward
+              <div class="money-field"><span>£</span><input name="reliefs.losses" inputmode="decimal" /></div>
+            </label>
+            <label>
+              PAYE tax already deducted
+              <div class="money-field"><span>£</span><input name="alreadyPaid.payeTax" inputmode="decimal" /></div>
+            </label>
+          </div>
+
+          <label>
+            CIS tax deducted
+            <div class="money-field"><span>£</span><input name="alreadyPaid.cisTax" inputmode="decimal" /></div>
+          </label>
+        </section>
+
+        <section class="step-card" data-step="4" hidden>
+          <h2>Review estimate</h2>
+          <p class="hint">This is an estimate. HMRC’s final calculation can differ.</p>
+
+          <div class="summary-grid" id="summaryGrid">
+            <article>
+              <h3>Estimated balance due</h3>
+              <p class="big-number" id="balanceDue">£0.00</p>
+            </article>
+            <article>
+              <h3>Estimated refund</h3>
+              <p class="big-number" id="estimatedRefund">£0.00</p>
+            </article>
+            <article>
+              <h3>Total liability</h3>
+              <p class="big-number" id="totalLiability">£0.00</p>
+            </article>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="breakdownRows"></tbody>
+            </table>
+          </div>
+
+          <ul id="estimateWarnings" class="warnings"></ul>
+        </section>
+
+        <section class="step-card" data-step="5" hidden>
+          <h2>Build XML and submit</h2>
+          <p class="hint">
+            Use HMRC-recognised credentials to submit. Test mode uses the HMRC test Transaction Engine endpoint.
+          </p>
+
+          <fieldset>
+            <legend>Declaration</legend>
+            <label class="checkbox">
+              <input name="declaration.accepted" type="checkbox" />
+              I confirm the details are true and complete to the best of my knowledge.
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>HMRC credentials</legend>
+            <div class="grid two">
+              <label>
+                Sender ID
+                <input name="credentials.senderId" autocomplete="username" />
+              </label>
+              <label>
+                Password
+                <input name="credentials.password" type="password" autocomplete="current-password" />
+              </label>
+            </div>
+
+            <div class="grid three">
+              <label>
+                Channel URI
+                <input name="credentials.channelUri" placeholder="mvp.local.tax-software" />
+              </label>
+              <label>
+                Product
+                <input name="credentials.product" placeholder="TaxSoftwareMVP" />
+              </label>
+              <label>
+                Version
+                <input name="credentials.productVersion" placeholder="0.1.0" />
+              </label>
+            </div>
+
+            <label class="checkbox">
+              <input name="submission.testMode" type="checkbox" checked />
+              Send to HMRC test endpoint (recommended)
+            </label>
+          </fieldset>
+
+          <div class="action-row">
+            <button type="button" id="buildXmlBtn">Build XML</button>
+            <button type="button" id="downloadXmlBtn" class="ghost-btn">Download XML</button>
+            <button type="button" id="submitBtn" class="warning">Submit to HMRC</button>
+          </div>
+
+          <label>
+            XML preview
+            <textarea id="xmlOutput" rows="12" readonly></textarea>
+          </label>
+
+          <label>
+            Submission response
+            <textarea id="submissionOutput" rows="8" readonly></textarea>
+          </label>
+        </section>
+
+        <footer class="wizard-nav">
+          <button type="button" id="prevBtn" class="ghost-btn">Back</button>
+          <button type="button" id="nextBtn">Continue</button>
+        </footer>
+      </form>
+    </main>
+
+    <p id="saveStatus" class="save-status">Saved locally</p>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

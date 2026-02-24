@@ -5,6 +5,7 @@ let currentStep = 1;
 let latestEstimate = null;
 
 const form = document.getElementById('returnForm');
+const appRoot = document.querySelector('.tc-app');
 const pages = [...document.querySelectorAll('.tc-page')];
 const treeStepButtons = [...document.querySelectorAll('[data-step-target]')];
 
@@ -29,6 +30,8 @@ const totalLiabilityEl = document.getElementById('totalLiability');
 const breakdownRows = document.getElementById('breakdownRows');
 const estimateWarnings = document.getElementById('estimateWarnings');
 const timerText = document.getElementById('timerText');
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
 const currencyFormatter = new Intl.NumberFormat('en-GB', {
   style: 'currency',
@@ -218,6 +221,18 @@ function updateStepUI() {
   }
 }
 
+function setSidebarOpen(isOpen) {
+  appRoot.classList.toggle('sidebar-open', isOpen);
+  document.body.classList.toggle('no-scroll', isOpen);
+  sidebarBackdrop.hidden = !isOpen;
+}
+
+function closeSidebarOnMobile() {
+  if (window.matchMedia('(max-width: 980px)').matches) {
+    setSidebarOpen(false);
+  }
+}
+
 function coerceNumber(value) {
   if (value === '' || value === null || value === undefined) return 0;
   const parsed = Number(value);
@@ -336,6 +351,7 @@ async function goToStep(nextStep) {
       flashStatus('Unable to refresh estimate right now.', true);
     }
   }
+  closeSidebarOnMobile();
 }
 
 async function handleFormChange(event) {
@@ -556,6 +572,21 @@ function bindEvents() {
     });
   });
 
+  mobileMenuBtn?.addEventListener('click', () => {
+    const isOpen = appRoot.classList.contains('sidebar-open');
+    setSidebarOpen(!isOpen);
+  });
+
+  sidebarBackdrop?.addEventListener('click', () => {
+    setSidebarOpen(false);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 981px)').matches) {
+      setSidebarOpen(false);
+    }
+  });
+
   buildXmlBtn?.addEventListener('click', onBuildXml);
   submitBtn?.addEventListener('click', onSubmitHmrc);
   downloadXmlBtn?.addEventListener('click', onDownloadXml);
@@ -584,6 +615,7 @@ async function init() {
   populateForm();
   bindEvents();
   startTimer();
+  setSidebarOpen(false);
   await goToStep(currentStep);
   flashStatus('Saved locally', false);
 }

@@ -3,280 +3,577 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Self Assessment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <title>Simple Self Assessment - Desktop</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="bg-layer"></div>
-    <header class="hero">
-      <p class="eyebrow">UK SELF ASSESSMENT MVP</p>
-      <h1>File your tax return in plain English</h1>
-      <p>
-        A guided, no-jargon flow for individuals. Save progress automatically, review your estimate, and build HMRC XML for submission.
-      </p>
-      <div class="hero-actions">
-        <button type="button" id="loadSampleBtn" class="ghost-btn">Load sample</button>
-        <button type="button" id="resetBtn" class="ghost-btn warning">Reset</button>
-      </div>
-    </header>
-
-    <main class="app-shell">
-      <section class="progress-panel" aria-label="Progress">
-        <div class="meter-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="20">
-          <span id="meterFill" class="meter-fill"></span>
+    <div class="tc-app">
+      <header class="tc-topbar">
+        <div class="tc-brand">
+          <div class="tc-logo-stack" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <h1>taxcalc<span>®</span></h1>
         </div>
-        <ol id="stepDots" class="step-dots">
-          <li>About you</li>
-          <li>Income</li>
-          <li>Reliefs</li>
-          <li>Review</li>
-          <li>Submit</li>
-        </ol>
-      </section>
 
-      <form id="returnForm" class="wizard" novalidate>
-        <section class="step-card" data-step="1">
-          <h2>About you</h2>
-          <p class="hint">These details identify your return. Keep them exactly as HMRC has them.</p>
+        <div class="tc-topbar-right">
+          <div class="tc-pill">
+            <span class="tc-pill-icon">◴</span>
+            <strong>TIME</strong>
+            <span id="timerText">0:00</span>
+          </div>
+          <div class="tc-pill">
+            <span class="tc-pill-check">✔</span>
+            <strong>NOTIFICATIONS</strong>
+            <span class="tc-pill-badge">6</span>
+          </div>
+        </div>
+      </header>
 
-          <div class="grid two">
-            <label>
-              First name
-              <input name="personal.firstName" autocomplete="given-name" required />
-            </label>
-            <label>
-              Last name
-              <input name="personal.lastName" autocomplete="family-name" required />
-            </label>
+      <div class="tc-shell">
+        <aside class="tc-sidebar">
+          <div class="tc-client-strip">
+            <button class="tc-home-btn" type="button">⌂</button>
+            <div class="tc-client-pill">×&nbsp;&nbsp;25 Baker Andrew</div>
           </div>
 
-          <div class="grid two">
-            <label>
-              Email
-              <input name="personal.email" type="email" autocomplete="email" />
-            </label>
-            <label>
-              Date of birth
-              <input name="personal.dateOfBirth" type="date" autocomplete="bday" />
-            </label>
+          <div class="tc-sidebar-title-wrap">
+            <h2>SA100 - SimpleStep</h2>
+            <button class="tc-collapse-btn" type="button">−</button>
           </div>
 
-          <div class="grid two">
-            <label>
-              Unique Taxpayer Reference (UTR)
-              <input name="personal.utr" inputmode="numeric" minlength="10" maxlength="10" required />
-            </label>
-            <label>
-              National Insurance number
-              <input name="personal.nino" placeholder="QQ123456C" />
-            </label>
-          </div>
+          <button class="tc-switch-btn" type="button">Switch to HMRC Forms</button>
 
-          <div class="grid two">
-            <label>
-              Region
-              <select name="personal.region">
-                <option value="england-wales-ni">England, Wales or Northern Ireland</option>
-                <option value="scotland">Scotland (estimate not fully supported)</option>
-              </select>
-            </label>
-            <label>
-              Tax year
-              <select name="taxYear">
-                <option value="2025-26">2025-26</option>
-              </select>
-            </label>
-          </div>
-        </section>
+          <nav class="tc-tree" aria-label="Return sections">
+            <button class="tc-tree-item" type="button" data-step-target="1">
+              <span class="state done">✓</span>
+              <span>Set up return</span>
+            </button>
+            <button class="tc-tree-item" type="button" data-step-target="2">
+              <span class="state done">✓</span>
+              <span>Joint income importing</span>
+            </button>
 
-        <section class="step-card" data-step="2" hidden>
-          <h2>Income</h2>
-          <p class="hint">Enter whole-year totals before tax.</p>
+            <button class="tc-tree-item" type="button" data-step-target="3">
+              <span class="state warning">✕</span>
+              <span>Personal details</span>
+            </button>
 
-          <div class="grid two">
-            <label>
-              Employment income
-              <div class="money-field"><span>£</span><input name="incomes.employment" inputmode="decimal" /></div>
-            </label>
-            <label>
-              Self-employment profit
-              <div class="money-field"><span>£</span><input name="incomes.selfEmployment" inputmode="decimal" /></div>
-            </label>
-          </div>
+            <button class="tc-tree-item child" type="button" data-step-target="4">
+              <span class="state neutral">▣</span>
+              <span>Your address</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Your Tax Return</span>
+            </button>
 
-          <div class="grid two">
-            <label>
-              Property income
-              <div class="money-field"><span>£</span><input name="incomes.property" inputmode="decimal" /></div>
-            </label>
-            <label>
-              Pension income
-              <div class="money-field"><span>£</span><input name="incomes.pension" inputmode="decimal" /></div>
-            </label>
-          </div>
+            <button class="tc-tree-item" type="button">
+              <span class="state done">✓</span>
+              <span>Residence and remittance</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Residence and remittance con</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Time spent in the UK</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Personal Allowances</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Dual Residence</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Domicile</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Remittance Basis</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Further information</span>
+            </button>
 
-          <div class="grid two">
-            <label>
-              Bank/building society interest
-              <div class="money-field"><span>£</span><input name="incomes.interest" inputmode="decimal" /></div>
-            </label>
-            <label>
-              Dividends
-              <div class="money-field"><span>£</span><input name="incomes.dividends" inputmode="decimal" /></div>
-            </label>
-          </div>
+            <button class="tc-tree-item" type="button">
+              <span class="state done">✓</span>
+              <span>Your work</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▣</span>
+              <span>Unpaid Director and Office Ho</span>
+            </button>
+            <button class="tc-tree-item child" type="button">
+              <span class="state neutral">▾</span>
+              <span>Employment</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button" data-step-target="5">
+              <span class="state neutral">▣</span>
+              <span>Pay received and tax paid</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button">
+              <span class="state neutral">▣</span>
+              <span>Fringe benefits</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button">
+              <span class="state neutral">▣</span>
+              <span>Company car wizard</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button">
+              <span class="state neutral">▣</span>
+              <span>Expenses</span>
+            </button>
+            <button class="tc-tree-item grandchild" type="button">
+              <span class="state neutral">▣</span>
+              <span>Additional Employment</span>
+            </button>
 
-          <label>
-            Other taxable income
-            <div class="money-field"><span>£</span><input name="incomes.other" inputmode="decimal" /></div>
-          </label>
-        </section>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Minister of religion</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Parliamentary pages</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Lump Sums</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Work abroad</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>UK patent royalty payments</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Self Employment</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Partnership Management</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Pension income and benefits</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Other income</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Any other income</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Tax reliefs and allowances</span>
+            </button>
+            <button class="tc-tree-item" type="button">
+              <span class="state neutral">▸</span>
+              <span>Capital Gains Tax</span>
+            </button>
+            <button class="tc-tree-item" type="button" data-step-target="6">
+              <span class="state neutral">▸</span>
+              <span>Working out your tax</span>
+            </button>
+            <button class="tc-tree-item" type="button" data-step-target="7">
+              <span class="state neutral">▸</span>
+              <span>File online and submit</span>
+            </button>
+          </nav>
 
-        <section class="step-card" data-step="3" hidden>
-          <h2>Reliefs and tax already paid</h2>
-          <p class="hint">Only fill what applies. Leave blank if not relevant.</p>
+          <section class="tc-tools">
+            <h3>Tools</h3>
+            <button type="button" id="loadSampleBtn" class="tool-link">Load sample</button>
+            <button type="button" id="resetBtn" class="tool-link">Reset</button>
+            <span>Add note</span>
+            <span>Mark as provisional</span>
+            <span>Additional Info</span>
+            <span>Calculator</span>
+          </section>
+        </aside>
 
-          <div class="grid two">
-            <label>
-              Pension contributions (gross)
-              <div class="money-field"><span>£</span><input name="reliefs.pensionContributions" inputmode="decimal" /></div>
-            </label>
-            <label>
-              Gift Aid donations
-              <div class="money-field"><span>£</span><input name="reliefs.giftAid" inputmode="decimal" /></div>
-            </label>
-          </div>
-
-          <div class="grid two">
-            <label>
-              Trading/property losses carried forward
-              <div class="money-field"><span>£</span><input name="reliefs.losses" inputmode="decimal" /></div>
-            </label>
-            <label>
-              PAYE tax already deducted
-              <div class="money-field"><span>£</span><input name="alreadyPaid.payeTax" inputmode="decimal" /></div>
-            </label>
-          </div>
-
-          <label>
-            CIS tax deducted
-            <div class="money-field"><span>£</span><input name="alreadyPaid.cisTax" inputmode="decimal" /></div>
-          </label>
-        </section>
-
-        <section class="step-card" data-step="4" hidden>
-          <h2>Review estimate</h2>
-          <p class="hint">This is an estimate. HMRC’s final calculation can differ.</p>
-
-          <div class="summary-grid" id="summaryGrid">
-            <article>
-              <h3>Estimated balance due</h3>
-              <p class="big-number" id="balanceDue">£0.00</p>
-            </article>
-            <article>
-              <h3>Estimated refund</h3>
-              <p class="big-number" id="estimatedRefund">£0.00</p>
-            </article>
-            <article>
-              <h3>Total liability</h3>
-              <p class="big-number" id="totalLiability">£0.00</p>
-            </article>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody id="breakdownRows"></tbody>
-            </table>
-          </div>
-
-          <ul id="estimateWarnings" class="warnings"></ul>
-        </section>
-
-        <section class="step-card" data-step="5" hidden>
-          <h2>Build XML and submit</h2>
-          <p class="hint">
-            Use HMRC-recognised credentials to submit. Test mode uses the HMRC test Transaction Engine endpoint.
-          </p>
-
-          <fieldset>
-            <legend>Declaration</legend>
-            <label class="checkbox">
-              <input name="declaration.accepted" type="checkbox" />
-              I confirm the details are true and complete to the best of my knowledge.
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend>HMRC credentials</legend>
-            <div class="grid two">
-              <label>
-                Sender ID
-                <input name="credentials.senderId" autocomplete="username" />
-              </label>
-              <label>
-                Password
-                <input name="credentials.password" type="password" autocomplete="current-password" />
-              </label>
+        <main class="tc-main">
+          <div class="tc-main-toolbar">
+            <div class="tc-left-tools">
+              <div class="tc-tax-widget">
+                <label for="taxWidgetType" class="sr-only">Tax metric</label>
+                <select id="taxWidgetType">
+                  <option>Total Tax &amp; NIC</option>
+                </select>
+                <input id="topTotalTax" type="text" value="£0.00" readonly />
+              </div>
             </div>
 
-            <div class="grid three">
-              <label>
-                Channel URI
-                <input name="credentials.channelUri" placeholder="mvp.local.tax-software" />
-              </label>
-              <label>
-                Product
-                <input name="credentials.product" placeholder="TaxSoftwareMVP" />
-              </label>
-              <label>
-                Version
-                <input name="credentials.productVersion" placeholder="0.1.0" />
-              </label>
+            <button class="tc-action-btn" type="button">Check &amp; Finish</button>
+
+            <div class="tc-right-tools">
+              <button class="tc-action-btn" type="button">Add to eSign Envelope</button>
+              <p>
+                ENG-67 (Andrew Baker)<br />
+                <strong>Tax Year Ending 5 April 2025</strong>
+              </p>
+              <button class="tc-gear-btn" type="button">⚙</button>
             </div>
-
-            <label class="checkbox">
-              <input name="submission.testMode" type="checkbox" checked />
-              Send to HMRC test endpoint (recommended)
-            </label>
-          </fieldset>
-
-          <div class="action-row">
-            <button type="button" id="buildXmlBtn">Build XML</button>
-            <button type="button" id="downloadXmlBtn" class="ghost-btn">Download XML</button>
-            <button type="button" id="submitBtn" class="warning">Submit to HMRC</button>
           </div>
 
-          <label>
-            XML preview
-            <textarea id="xmlOutput" rows="12" readonly></textarea>
-          </label>
+          <form id="returnForm" class="tc-form" novalidate>
+            <section class="tc-page" data-step="1">
+              <h2>Filing client returns</h2>
+              <div class="two-col-copy">
+                <article>
+                  <h3>Filing client returns online</h3>
+                  <p>
+                    To file on behalf of clients, you will need to register with HMRC as an agent. If you are not yet
+                    registered with HMRC for online filing, click here.
+                  </p>
+                  <p>The HMRC online registration will enable you to use all of the following services:</p>
+                  <ul>
+                    <li>Corporation Tax returns</li>
+                    <li>Self Assessment returns</li>
+                    <li>VAT for Agents</li>
+                    <li>VAT EU Refunds for Agents</li>
+                    <li>PAYE/CIS for Agents</li>
+                    <li>Stamp Taxes for Agents</li>
+                  </ul>
+                </article>
+                <article>
+                  <h3>Printing and filing paper returns</h3>
+                  <p>
+                    HMRC would prefer you to file online. However, if you are unable to do so or would prefer to file a
+                    paper return, you can print and file a return using this software.
+                  </p>
+                  <p>
+                    To see the requirements, penalties and exceptions for filing by paper, you can view HMRC guidance on
+                    filing by paper.
+                  </p>
+                </article>
+              </div>
 
-          <label>
-            Submission response
-            <textarea id="submissionOutput" rows="8" readonly></textarea>
-          </label>
-        </section>
+              <div class="tc-banner">
+                <header>
+                  <strong>GOV.UK</strong>
+                  <span>Fetch Taxpayer Data</span>
+                </header>
+                <div>
+                  <p>
+                    Wherever you see a box like this, the software can collect information about income, expenses,
+                    allowances and more and populate the tax return.
+                  </p>
+                  <button type="button">Fetch</button>
+                </div>
+              </div>
+            </section>
 
-        <footer class="wizard-nav">
-          <button type="button" id="prevBtn" class="ghost-btn">Back</button>
-          <button type="button" id="nextBtn">Continue</button>
-        </footer>
-      </form>
-    </main>
+            <section class="tc-page" data-step="2" hidden>
+              <h2>Importing joint Income</h2>
+              <p>
+                As well as allowing you to bring your data forward from last year, this software includes options for
+                importing data from another individual return.
+              </p>
+              <h3>Joint Investments, payments etc</h3>
+              <p>
+                You may own investments or make payments jointly with someone else. To save entering the same details
+                twice, import data already entered onto another person's return.
+              </p>
+              <button class="tc-action-btn" type="button">Select return</button>
+              <h3>Importing other Income</h3>
+              <p>
+                Import from self-employed accounts files or partnership returns where data has already been completed.
+              </p>
+              <h3>Self Employed accounts</h3>
+              <p>
+                If you have your accounts in an SNF file (Standard Name Format) then you can import that data into a
+                specific set of self-employed pages.
+              </p>
+              <h3>Income from a Partnership</h3>
+              <p>
+                If you received income from a partnership and have completed an SA800 return then you can import your
+                income and losses directly from the partnership return.
+              </p>
+            </section>
 
-    <p id="saveStatus" class="save-status">Saved locally</p>
+            <section class="tc-page" data-step="3" hidden>
+              <h2>Personal details</h2>
+              <p>Please enter your:</p>
+
+              <div class="tc-grid-rows">
+                <label class="tc-row">
+                  <span>Title</span>
+                  <select name="personal.title">
+                    <option value="">Select</option>
+                    <option>Mr</option>
+                    <option>Mrs</option>
+                    <option>Miss</option>
+                    <option>Ms</option>
+                    <option>Dr</option>
+                  </select>
+                </label>
+
+                <label class="tc-row">
+                  <span>Marital Status</span>
+                  <select name="personal.maritalStatus">
+                    <option value="">Select</option>
+                    <option>Single</option>
+                    <option>Married</option>
+                    <option>Civil partnership</option>
+                    <option>Divorced</option>
+                  </select>
+                </label>
+
+                <fieldset class="tc-row radio-row">
+                  <legend>Gender</legend>
+                  <label><input type="radio" name="personal.gender" value="male" /> Male</label>
+                  <label><input type="radio" name="personal.gender" value="female" /> Female</label>
+                </fieldset>
+
+                <label class="tc-row">
+                  <span>First Name</span>
+                  <input name="personal.firstName" autocomplete="given-name" required />
+                </label>
+
+                <label class="tc-row">
+                  <span>Middle Name(s)</span>
+                  <input name="personal.middleNames" />
+                </label>
+
+                <label class="tc-row">
+                  <span>Surname</span>
+                  <input name="personal.lastName" autocomplete="family-name" required />
+                </label>
+
+                <label class="tc-row">
+                  <span>Date of Birth</span>
+                  <input type="date" name="personal.dateOfBirth" autocomplete="bday" />
+                </label>
+
+                <label class="tc-row">
+                  <span>Unique Tax Reference (UTR)</span>
+                  <input name="personal.utr" inputmode="numeric" minlength="10" maxlength="10" required />
+                </label>
+
+                <label class="tc-row">
+                  <span>National Insurance Number (NINO)</span>
+                  <input name="personal.nino" placeholder="QQ123456C" />
+                </label>
+
+                <label class="tc-row toggle-row">
+                  <span>Is this different to the NINO on the tax return that you received?</span>
+                  <input type="checkbox" name="personal.ninoDifferent" />
+                </label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="4" hidden>
+              <h2>Your address</h2>
+              <p>Please enter your address:</p>
+
+              <div class="tc-grid-rows">
+                <label class="tc-row block-row">
+                  <span>Address</span>
+                  <textarea name="address.line1" rows="3"></textarea>
+                </label>
+                <label class="tc-row">
+                  <span>Address line 2</span>
+                  <input name="address.line2" />
+                </label>
+                <label class="tc-row">
+                  <span>Address line 3</span>
+                  <input name="address.line3" />
+                </label>
+                <label class="tc-row">
+                  <span>Address line 4</span>
+                  <input name="address.line4" />
+                </label>
+                <label class="tc-row">
+                  <span>Postcode</span>
+                  <input name="address.postcode" />
+                </label>
+                <label class="tc-row">
+                  <span>Daytime telephone number</span>
+                  <input name="address.phone" />
+                </label>
+              </div>
+
+              <p>If either your name or address appears differently on the form issued by HMRC please enter the date at which this changed.</p>
+              <label class="date-inline">
+                <span>Date changed</span>
+                <input type="date" name="address.effectiveDate" />
+              </label>
+
+              <fieldset class="tc-region-group">
+                <legend>Tax region</legend>
+                <label>
+                  <input type="radio" name="personal.region" value="england-wales-ni" />
+                  Subject to tax using UK rates for England and Northern Ireland
+                </label>
+                <label>
+                  <input type="radio" name="personal.region" value="scotland" />
+                  Subject to tax using Scottish income tax rates
+                </label>
+                <label>
+                  <input type="radio" name="personal.region" value="wales" />
+                  Subject to tax using Welsh income tax rates
+                </label>
+              </fieldset>
+            </section>
+
+            <section class="tc-page" data-step="5" hidden>
+              <h2>Pay received and tax paid from</h2>
+              <p>Please enter any money payments received from this employer in 2025-26.</p>
+
+              <div class="tc-grid-rows">
+                <label class="tc-row">
+                  <span>Pay shown on your form P60 or P45</span>
+                  <input name="incomes.employment" inputmode="decimal" />
+                </label>
+                <label class="tc-row">
+                  <span>Payroll benefits included in your P60 or P45</span>
+                  <input name="employment.payrollBenefits" inputmode="decimal" />
+                </label>
+                <label class="tc-row">
+                  <span>HMRC Pension contribution payment</span>
+                  <input name="employment.hmrcPensionPayment" inputmode="decimal" />
+                </label>
+                <label class="tc-row">
+                  <span>Tips and other payments not on your P60</span>
+                  <input name="employment.tips" inputmode="decimal" />
+                </label>
+                <label class="tc-row toggle-row">
+                  <span>Did any income arise from working abroad?</span>
+                  <input type="checkbox" name="employment.workAbroad" />
+                </label>
+              </div>
+
+              <p>Please enter details of:</p>
+              <div class="tc-grid-rows">
+                <label class="tc-row">
+                  <span>UK tax already deducted from your pay</span>
+                  <input name="alreadyPaid.payeTax" inputmode="decimal" />
+                </label>
+                <label class="tc-row">
+                  <span>Student loan repayments deducted by your employer</span>
+                  <input name="employment.studentLoan" inputmode="decimal" />
+                </label>
+                <label class="tc-row">
+                  <span>Postgraduate loan repayments deducted by your employer</span>
+                  <input name="employment.postgraduateLoan" inputmode="decimal" />
+                </label>
+                <label class="tc-row toggle-row">
+                  <span>Is this income from inside off-payroll working engagements?</span>
+                  <input type="checkbox" name="employment.offPayroll" />
+                </label>
+              </div>
+            </section>
+
+            <section class="tc-page" data-step="6" hidden>
+              <h2>Working out your tax</h2>
+              <p>Estimated calculation summary for this return.</p>
+
+              <div class="tc-estimate-strip">
+                <article>
+                  <h3>Estimated balance due</h3>
+                  <p id="balanceDue">£0.00</p>
+                </article>
+                <article>
+                  <h3>Estimated refund</h3>
+                  <p id="estimatedRefund">£0.00</p>
+                </article>
+                <article>
+                  <h3>Total liability</h3>
+                  <p id="totalLiability">£0.00</p>
+                </article>
+              </div>
+
+              <table class="tc-breakdown-table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="breakdownRows"></tbody>
+              </table>
+
+              <ul id="estimateWarnings" class="tc-warnings"></ul>
+            </section>
+
+            <section class="tc-page" data-step="7" hidden>
+              <h2>File online and submit</h2>
+              <p>Generate HMRC XML and submit through the Transaction Engine.</p>
+
+              <div class="tc-grid-rows">
+                <label class="tc-row toggle-row">
+                  <span>I confirm the details are true and complete to the best of my knowledge.</span>
+                  <input name="declaration.accepted" type="checkbox" />
+                </label>
+                <label class="tc-row">
+                  <span>Sender ID</span>
+                  <input name="credentials.senderId" autocomplete="username" />
+                </label>
+                <label class="tc-row">
+                  <span>Password</span>
+                  <input name="credentials.password" type="password" autocomplete="current-password" />
+                </label>
+                <label class="tc-row">
+                  <span>Channel URI</span>
+                  <input name="credentials.channelUri" placeholder="mvp.local.tax-software" />
+                </label>
+                <label class="tc-row">
+                  <span>Product</span>
+                  <input name="credentials.product" placeholder="TaxSoftwareMVP" />
+                </label>
+                <label class="tc-row">
+                  <span>Version</span>
+                  <input name="credentials.productVersion" placeholder="0.1.0" />
+                </label>
+                <label class="tc-row toggle-row">
+                  <span>Send to HMRC test endpoint (recommended)</span>
+                  <input name="submission.testMode" type="checkbox" checked />
+                </label>
+              </div>
+
+              <div class="tc-submit-actions">
+                <button type="button" id="buildXmlBtn" class="tc-action-btn">Build XML</button>
+                <button type="button" id="downloadXmlBtn" class="tc-action-btn">Download XML</button>
+                <button type="button" id="submitBtn" class="tc-action-btn">Submit to HMRC</button>
+              </div>
+
+              <label class="tc-stack-label">
+                XML preview
+                <textarea id="xmlOutput" rows="10" readonly></textarea>
+              </label>
+
+              <label class="tc-stack-label">
+                Submission response
+                <textarea id="submissionOutput" rows="8" readonly></textarea>
+              </label>
+            </section>
+          </form>
+
+          <footer class="tc-footer-nav">
+            <button type="button" id="prevBtn">◄ Prev Step</button>
+            <button type="button" id="deleteScheduleBtn" hidden>Delete schedule</button>
+            <button type="button" id="nextBtn">Next Step ►</button>
+          </footer>
+        </main>
+      </div>
+
+      <p id="saveStatus" class="save-status">Saved locally</p>
+    </div>
 
     <script type="module" src="/app.js"></script>
   </body>

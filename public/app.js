@@ -1,16 +1,17 @@
-const STORAGE_KEY = 'simple-sa-mvp-state-v1';
-const totalSteps = 5;
+const STORAGE_KEY = 'simple-sa-mvp-state-v2';
+const totalSteps = 7;
+
 let currentStep = 1;
 let latestEstimate = null;
 
 const form = document.getElementById('returnForm');
-const stepCards = [...document.querySelectorAll('.step-card')];
-const stepDots = [...document.querySelectorAll('#stepDots li')];
-const meterFill = document.getElementById('meterFill');
-const saveStatus = document.getElementById('saveStatus');
+const pages = [...document.querySelectorAll('.tc-page')];
+const treeStepButtons = [...document.querySelectorAll('[data-step-target]')];
 
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const deleteScheduleBtn = document.getElementById('deleteScheduleBtn');
+
 const buildXmlBtn = document.getElementById('buildXmlBtn');
 const submitBtn = document.getElementById('submitBtn');
 const downloadXmlBtn = document.getElementById('downloadXmlBtn');
@@ -19,12 +20,15 @@ const resetBtn = document.getElementById('resetBtn');
 
 const xmlOutput = document.getElementById('xmlOutput');
 const submissionOutput = document.getElementById('submissionOutput');
+const saveStatus = document.getElementById('saveStatus');
 
+const topTotalTax = document.getElementById('topTotalTax');
 const balanceDueEl = document.getElementById('balanceDue');
 const refundEl = document.getElementById('estimatedRefund');
 const totalLiabilityEl = document.getElementById('totalLiability');
 const breakdownRows = document.getElementById('breakdownRows');
 const estimateWarnings = document.getElementById('estimateWarnings');
+const timerText = document.getElementById('timerText');
 
 const currencyFormatter = new Intl.NumberFormat('en-GB', {
   style: 'currency',
@@ -34,13 +38,27 @@ const currencyFormatter = new Intl.NumberFormat('en-GB', {
 const defaultState = {
   taxYear: '2025-26',
   personal: {
+    title: '',
     firstName: '',
+    middleNames: '',
     lastName: '',
+    maritalStatus: '',
+    gender: '',
     email: '',
     dateOfBirth: '',
     utr: '',
     nino: '',
+    ninoDifferent: false,
     region: 'england-wales-ni'
+  },
+  address: {
+    line1: '',
+    line2: '',
+    line3: '',
+    line4: '',
+    postcode: '',
+    phone: '',
+    effectiveDate: ''
   },
   incomes: {
     employment: '',
@@ -50,6 +68,15 @@ const defaultState = {
     interest: '',
     dividends: '',
     other: ''
+  },
+  employment: {
+    payrollBenefits: '',
+    hmrcPensionPayment: '',
+    tips: '',
+    workAbroad: false,
+    studentLoan: '',
+    postgraduateLoan: '',
+    offPayroll: false
   },
   reliefs: {
     pensionContributions: '',
@@ -75,7 +102,8 @@ const defaultState = {
     testMode: true
   },
   ui: {
-    currentStep: 1
+    currentStep: 1,
+    startedAt: Date.now()
   }
 };
 
@@ -85,6 +113,7 @@ const state = clone(defaultState);
 function deepMerge(target, source) {
   Object.keys(source || {}).forEach((key) => {
     const sourceValue = source[key];
+
     if (sourceValue && typeof sourceValue === 'object' && !Array.isArray(sourceValue)) {
       if (!target[key] || typeof target[key] !== 'object') {
         target[key] = {};
@@ -122,6 +151,11 @@ function setNested(path, value) {
   cursor[parts[parts.length - 1]] = value;
 }
 
+function flashStatus(message, isError = false) {
+  saveStatus.textContent = message;
+  saveStatus.style.color = isError ? '#8d1d24' : '#244952';
+}
+
 function loadFromStorage() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return;
@@ -141,23 +175,47 @@ function saveToStorage(message = 'Saved locally') {
   flashStatus(message, false);
 }
 
-function flashStatus(message, isError) {
-  saveStatus.textContent = message;
-  saveStatus.style.color = isError ? '#8a2e1c' : '#2f5f55';
-}
-
 function populateForm() {
   [...form.querySelectorAll('[name]')].forEach((field) => {
-    const path = field.name;
-    const value = getNested(path);
+    const value = getNested(field.name);
 
     if (field.type === 'checkbox') {
       field.checked = Boolean(value);
       return;
     }
 
+    if (field.type === 'radio') {
+      field.checked = String(value) === field.value;
+      return;
+    }
+
     field.value = value ?? '';
   });
+}
+
+function formatCurrency(value) {
+  return currencyFormatter.format(Number(value || 0));
+}
+
+function updateStepUI() {
+  pages.forEach((page, index) => {
+    page.hidden = index !== currentStep - 1;
+  });
+
+  treeStepButtons.forEach((button) => {
+    const target = Number(button.dataset.stepTarget);
+    button.classList.toggle('active', target === currentStep);
+  });
+
+  prevBtn.disabled = currentStep === 1;
+  nextBtn.disabled = currentStep === totalSteps;
+  deleteScheduleBtn.hidden = currentStep !== 5;
+
+  if (currentStep === totalSteps) {
+    nextBtn.textContent = 'Next Step ►';
+  } else {
+    nextBtn.textContent = 'Next Step ►';
+  }
 }
 
 function coerceNumber(value) {
@@ -169,7 +227,15 @@ function coerceNumber(value) {
 function payloadFromState() {
   return {
     taxYear: state.taxYear,
-    personal: { ...state.personal },
+    personal: {
+      firstName: state.personal.firstName,
+      lastName: state.personal.lastName,
+      email: state.personal.email,
+      dateOfBirth: state.personal.dateOfBirth,
+      utr: state.personal.utr,
+      nino: state.personal.nino,
+      region: state.personal.region
+    },
     incomes: Object.fromEntries(
       Object.entries(state.incomes).map(([key, value]) => [key, coerceNumber(value)])
     ),
@@ -199,28 +265,6 @@ function credentialsFromState() {
   };
 }
 
-function updateStepUi() {
-  stepCards.forEach((card, index) => {
-    card.hidden = index !== currentStep - 1;
-  });
-
-  stepDots.forEach((dot, index) => {
-    dot.classList.toggle('active', index === currentStep - 1);
-  });
-
-  const pct = (currentStep / totalSteps) * 100;
-  meterFill.style.width = `${pct}%`;
-  meterFill.parentElement.setAttribute('aria-valuenow', String(Math.round(pct)));
-
-  prevBtn.disabled = currentStep === 1;
-  nextBtn.textContent = currentStep === totalSteps ? 'Stay on this step' : 'Continue';
-  nextBtn.disabled = currentStep === totalSteps;
-}
-
-function formatCurrency(value) {
-  return currencyFormatter.format(Number(value || 0));
-}
-
 function renderEstimate(estimate) {
   if (!estimate?.breakdown) return;
 
@@ -228,6 +272,7 @@ function renderEstimate(estimate) {
   balanceDueEl.textContent = formatCurrency(breakdown.balanceDue);
   refundEl.textContent = formatCurrency(breakdown.estimatedRefund);
   totalLiabilityEl.textContent = formatCurrency(breakdown.totalLiability);
+  topTotalTax.value = formatCurrency(breakdown.totalLiability);
 
   const rows = [
     ['Income tax', breakdown.incomeTax],
@@ -239,10 +284,7 @@ function renderEstimate(estimate) {
   ];
 
   breakdownRows.innerHTML = rows
-    .map(
-      ([label, value]) =>
-        `<tr><td>${label}</td><td>${formatCurrency(value)}</td></tr>`
-    )
+    .map(([label, amount]) => `<tr><td>${label}</td><td>${formatCurrency(amount)}</td></tr>`)
     .join('');
 
   estimateWarnings.innerHTML = (estimate.warnings || [])
@@ -269,27 +311,47 @@ async function runEstimate() {
 }
 
 function validateCurrentStep() {
-  if (currentStep !== 1) return true;
+  if (currentStep !== 3) return true;
 
-  const requiredNames = ['personal.firstName', 'personal.lastName', 'personal.utr'];
-  const missing = requiredNames.filter((name) => {
-    const value = String(getNested(name) || '').trim();
-    return value.length === 0;
-  });
+  const required = ['personal.firstName', 'personal.lastName', 'personal.utr'];
+  const missing = required.filter((key) => String(getNested(key) || '').trim() === '');
 
-  if (missing.length > 0) {
-    flashStatus('Please complete first name, last name, and UTR to continue.', true);
+  if (missing.length) {
+    flashStatus('Please complete first name, surname and UTR before moving on.', true);
     return false;
   }
 
   return true;
 }
 
+async function goToStep(nextStep) {
+  currentStep = Math.max(1, Math.min(totalSteps, nextStep));
+  updateStepUI();
+  saveToStorage('Saved locally');
+
+  if (currentStep >= 5) {
+    try {
+      await runEstimate();
+    } catch {
+      flashStatus('Unable to refresh estimate right now.', true);
+    }
+  }
+}
+
 async function handleFormChange(event) {
   const field = event.target;
   if (!field.name) return;
 
-  const value = field.type === 'checkbox' ? field.checked : field.value;
+  let value;
+  if (field.type === 'checkbox') {
+    value = field.checked;
+  } else if (field.type === 'radio') {
+    if (!field.checked) return;
+    value = field.value;
+  } else {
+    value = field.value;
+  }
+
   setNested(field.name, value);
 
   if (field.name === 'declaration.accepted') {
@@ -298,25 +360,11 @@ async function handleFormChange(event) {
 
   saveToStorage('Saved locally');
 
-  if (currentStep >= 4) {
+  if (currentStep >= 5) {
     try {
       await runEstimate();
     } catch {
-      flashStatus('Could not refresh estimate right now.', true);
-    }
-  }
-}
-
-async function goToStep(nextStep) {
-  currentStep = Math.max(1, Math.min(totalSteps, nextStep));
-  updateStepUi();
-  saveToStorage();
-
-  if (currentStep >= 4) {
-    try {
-      await runEstimate();
-    } catch {
-      flashStatus('Estimate refresh failed. Please try again.', true);
+      flashStatus('Could not refresh estimate.', true);
     }
   }
 }
@@ -324,6 +372,7 @@ async function goToStep(nextStep) {
 async function onBuildXml() {
   try {
     await runEstimate();
+
     const response = await fetch('/api/hmrc/xml', {
       method: 'POST',
       headers: {
@@ -344,19 +393,19 @@ async function onBuildXml() {
     xmlOutput.value = data.xml;
     flashStatus('XML generated. Review before submitting.', false);
   } catch (error) {
-    flashStatus(error.message || 'Could not build XML', true);
+    flashStatus(error.message || 'Could not build XML.', true);
   }
 }
 
 async function onSubmitHmrc() {
   if (!state.declaration.accepted) {
-    flashStatus('Accept the declaration before submitting.', true);
+    flashStatus('Please confirm the declaration before submitting.', true);
     return;
   }
 
   const creds = credentialsFromState();
   if (!creds.senderId || !creds.password || !creds.utr) {
-    flashStatus('Sender ID, password, and UTR are required for submission.', true);
+    flashStatus('Sender ID, password and UTR are required.', true);
     return;
   }
 
@@ -384,9 +433,9 @@ async function onSubmitHmrc() {
       throw new Error(data.error || data.hmrcError?.message || 'HMRC submission failed');
     }
 
-    flashStatus('Submitted successfully. Save the correlation ID from the response.', false);
+    flashStatus('Submitted. Keep the correlation ID from the response.', false);
   } catch (error) {
-    flashStatus(error.message || 'Submission failed', true);
+    flashStatus(error.message || 'Submission failed.', true);
   } finally {
     submitBtn.disabled = false;
   }
@@ -411,13 +460,27 @@ function onDownloadXml() {
 function loadSample() {
   deepMerge(state, {
     personal: {
-      firstName: 'Jordan',
-      lastName: 'Patel',
-      email: 'jordan@example.com',
+      title: 'Mr',
+      firstName: 'Andrew',
+      middleNames: '',
+      lastName: 'Baker',
+      maritalStatus: 'Single',
+      gender: 'male',
+      email: 'andrew@example.com',
       dateOfBirth: '1988-07-14',
       utr: '1234567890',
       nino: 'QQ123456C',
+      ninoDifferent: false,
       region: 'england-wales-ni'
+    },
+    address: {
+      line1: '25 Baker Street',
+      line2: 'Marylebone',
+      line3: 'London',
+      line4: '',
+      postcode: 'W1U 8EQ',
+      phone: '02079460000',
+      effectiveDate: ''
     },
     incomes: {
       employment: '42000',
@@ -427,6 +490,15 @@ function loadSample() {
       interest: '280',
       dividends: '1200',
       other: '0'
+    },
+    employment: {
+      payrollBenefits: '0',
+      hmrcPensionPayment: '0',
+      tips: '0',
+      workAbroad: false,
+      studentLoan: '0',
+      postgraduateLoan: '0',
+      offPayroll: false
     },
     reliefs: {
       pensionContributions: '1800',
@@ -447,6 +519,9 @@ function loadSample() {
   });
 
   populateForm();
+  runEstimate().catch(() => {
+    flashStatus('Sample loaded; estimate unavailable right now.', true);
+  });
   saveToStorage('Sample data loaded');
 }
 
@@ -459,30 +534,56 @@ function resetAll() {
   window.location.reload();
 }
 
-function registerEvents() {
+function bindEvents() {
   form.addEventListener('input', handleFormChange);
   form.addEventListener('change', handleFormChange);
 
-  nextBtn.addEventListener('click', async () => {
+  prevBtn.addEventListener('click', () => {
+    goToStep(currentStep - 1);
+  });
+
+  nextBtn.addEventListener('click', () => {
     if (!validateCurrentStep()) return;
-    await goToStep(currentStep + 1);
+    goToStep(currentStep + 1);
   });
 
-  prevBtn.addEventListener('click', async () => {
-    await goToStep(currentStep - 1);
+  treeStepButtons.forEach((button) => {
+    const target = Number(button.dataset.stepTarget);
+    if (!Number.isFinite(target)) return;
+
+    button.addEventListener('click', () => {
+      goToStep(target);
+    });
   });
 
-  buildXmlBtn.addEventListener('click', onBuildXml);
-  submitBtn.addEventListener('click', onSubmitHmrc);
-  downloadXmlBtn.addEventListener('click', onDownloadXml);
-  loadSampleBtn.addEventListener('click', loadSample);
-  resetBtn.addEventListener('click', resetAll);
+  buildXmlBtn?.addEventListener('click', onBuildXml);
+  submitBtn?.addEventListener('click', onSubmitHmrc);
+  downloadXmlBtn?.addEventListener('click', onDownloadXml);
+
+  loadSampleBtn?.addEventListener('click', loadSample);
+  resetBtn?.addEventListener('click', resetAll);
+}
+
+function startTimer() {
+  const start = Number(state.ui.startedAt || Date.now());
+  state.ui.startedAt = start;
+
+  const tick = () => {
+    const elapsedSeconds = Math.floor((Date.now() - start) / 1000);
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+    timerText.textContent = `${minutes}:${String(seconds).padStart(2, '0')}`;
+  };
+
+  tick();
+  setInterval(tick, 1000);
 }
 
 async function init() {
   loadFromStorage();
   populateForm();
-  registerEvents();
+  bindEvents();
+  startTimer();
   await goToStep(currentStep);
   flashStatus('Saved locally', false);
 }
